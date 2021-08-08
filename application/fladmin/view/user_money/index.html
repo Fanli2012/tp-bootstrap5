@@ -1,0 +1,57 @@
+{extend name="public/base" /}
+{block name="title"}用户余额记录列表{/block}
+
+{block name="content"}
+<script language="javascript" type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="container-fluid admin-content-nav">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active"><a href="{:url('index')}">用户余额记录列表(<?php echo $list->total(); ?>条)</a></li>
+  </ol>
+</nav>
+</div>
+
+<div class="container-fluid admin-content-ptb15">
+  <form action="{:url('index')}" method="get" class="row g-2 align-items-center">
+	  <div class="col-auto">
+		<div class="input-group">
+		  <input id="start_date" name="start_date" autocomplete="off" onclick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})" size="10" type="text" class="form-control" placeholder="开始时间">
+		  <span class="input-group-text">-</span>
+		  <input id="end_date" name="end_date" autocomplete="off" onclick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})" size="10" type="text" class="form-control" placeholder="结束时间">
+		  <button class="btn btn-dark" type="submit">查询</button>
+		</div>
+	  </div>
+	  <div class="col-auto">
+		<div class="input-group">
+		  <input id="keyword" name="keyword" type="text" placeholder="请输入关键字" autocomplete="off" class="form-control">
+		  <button class="btn btn-success" type="submit">搜索</button>
+		</div>
+	  </div>
+  </form>
+</div>
+
+<div class="container-fluid admin-content-ptb15 border-bottom-0">
+<form name="listarc" action="" method="get">
+<div class="table-responsive"><table class="table table-bordered table-hover">
+<thead class="table-light"><tr>
+<th>ID</th>
+<th>用户名</th>
+<th>金额</th>
+<th>说明</th>
+<th>每次增减后面的金额</th>
+<th>时间</th>
+</tr></thead>
+<tbody>
+<?php if($list){foreach($list as $row){ ?><tr>
+<td><?php echo $row['id']; ?></td>
+<td><a href="<?php echo url('user_money/index').'?user_id='.$row['user_id']; ?>"><?php if($row['user']['user_name']){echo $row['user']['user_name'];}else{echo $row['user']['mobile'];} ?></a></td>
+<td><font<?php if($row['type']==1){echo ' color="#0C0"';}else{echo ' color="red"';} ?>><?php if($row['type']==1){echo '-';} ?><?php echo $row['money']; ?></font></td>
+<td><?php echo $row['desc']; ?></td>
+<td><?php echo $row['user_money']; ?></td>
+<td><?php echo date('Y-m-d H:i:s',$row['add_time']); ?></td>
+</tr><?php }} ?>
+</tbody></table></div><!-- 表格结束 --></form><!-- 表单结束 -->
+<div class="backpages">{$page}</div>
+</div>
+{/block}

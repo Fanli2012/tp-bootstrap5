@@ -1,0 +1,49 @@
+{extend name="public/base" /}
+{block name="title"}内链关键词列表{/block}
+
+{block name="content"}
+
+<div class="container-fluid admin-content-nav">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active"><a href="{:url('index')}">内链关键词管理(<?php echo $list->total(); ?>条)</a></li>
+  </ol>
+</nav>
+</div>
+
+<div class="container-fluid admin-content-ptb15">
+  <form action="{:url('index')}" method="get" class="row g-2 align-items-center">
+	  <div class="col-auto g-1">
+		搜索：
+	  </div>
+	  <div class="col-auto">
+		<div class="input-group">
+		  <input id="keyword" name="keyword" type="text" placeholder="请输入关键字" autocomplete="off" class="form-control">
+		  <button class="btn btn-success" type="submit">搜索</button>
+		</div>
+	  </div>
+  </form>
+</div>
+
+<div class="container-fluid">
+  <div class="admin-content-ptb15 border-bottom-0">
+    <a href="{:url('add')}" class="btn btn-danger"><i class="bi bi-plus-circle"></i> 添加内链关键词</a>
+  </div>
+<form name="listarc"><div class="table-responsive"><table class="table table-bordered table-hover">
+<thead class="table-light"><tr>
+<th>编号</th>
+<th>内链关键词</th>
+<th>链接网址</th>
+<th>管理</th>
+</tr></thead>
+<tbody>
+<?php if($list){foreach($list as $row){ ?><tr>
+<td><?php echo $row["id"]; ?></td>
+<td><?php echo $row["name"]; ?></td>
+<td><?php echo $row["url"]; ?></td>
+<td><a href="{:url('edit')}?id=<?php echo $row["id"]; ?>">修改</a> | <a onclick="delconfirm('{:url('del')}?id=<?php echo $row["id"]; ?>')" href="javascript:;">删除</a></td>
+</tr><?php }} ?>
+</tbody></table></div><!-- 表格结束 --></form><!-- 表单结束 -->
+<div class="backpages">{$page}</div>
+</div>
+{/block}

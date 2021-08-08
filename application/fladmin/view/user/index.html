@@ -1,0 +1,71 @@
+{extend name="public/base" /}
+{block name="title"}会员列表{/block}
+
+{block name="content"}
+<script language="javascript" type="text/javascript" src="/js/My97DatePicker/WdatePicker.js"></script>
+
+<div class="container-fluid admin-content-nav">
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active"><a href="{:url('index')}">会员列表(<?php echo $list->total(); ?>条)</a></li>
+  </ol>
+</nav>
+</div>
+
+<div class="container-fluid admin-content-ptb15">
+  <form action="{:url('index')}" method="get" class="row g-2 align-items-center">
+	  <div class="col-auto">
+		<div class="input-group">
+		  <input id="start_date" name="start_date" autocomplete="off" onclick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})" size="10" type="text" class="form-control" placeholder="开始时间">
+		  <span class="input-group-text">-</span>
+		  <input id="end_date" name="end_date" autocomplete="off" onclick="WdatePicker({el:this,dateFmt:'yyyy-MM-dd'})" size="10" type="text" class="form-control" placeholder="结束时间">
+		  <button class="btn btn-dark" type="submit">查询</button>
+		</div>
+	  </div>
+	  <div class="col-auto">
+		<div class="input-group">
+		  <input id="id" name="id" type="text" placeholder="用户ID" class="form-control" style="margin-right:10px;">
+		  <input id="keyword" name="keyword" type="text" placeholder="请输入关键字" autocomplete="off" class="form-control">
+		  <button class="btn btn-success" type="submit">搜索</button>
+		</div>
+	  </div>
+  </form>
+</div>
+
+<div class="container-fluid">
+  <div class="admin-content-ptb15 border-bottom-0">
+    <a href="{:url('add')}" class="btn btn-danger"><i class="bi bi-plus-circle"></i> 添加会员</a>
+	<a href="<?php echo url('user_money/index'); ?>" class="btn btn-primary">余额记录</a>
+	<a href="<?php echo url('user_rank/index'); ?>" class="btn btn-secondary">会员等级</a>
+	<a href="<?php echo url('user/index'); ?>?is_online=1" class="btn btn-warning">在线会员</a>
+	<a href="<?php echo url('user/output_excel'); ?>" class="btn btn-success">导出EXCEL</a>
+  </div>
+
+<form name="listarc"><div class="table-responsive"><table class="table table-bordered table-hover">
+<thead class="table-light"><tr>
+<th>ID</th>
+<th>用户名</th>
+<th>性别</th>
+<th>余额</th>
+<th>积分</th>
+<th>佣金</th>
+<th>注册时间</th>
+<th>状态</th>
+<th>管理</th>
+</tr></thead>
+<tbody>
+<?php if ($list) { foreach ($list as $row) { ?><tr>
+<td><?php echo $row['id']; ?></td>
+<td><?php if (!empty($row['head_img'])) { ?><img src="<?php echo $row['head_img']; ?>" style="width:24px;height:24px;" onerror="this.src='<?php echo http_host(); ?>/images/no_pic.jpg'"><?php } ?> <a href="javascript:;" style="<?php if ($row['login_time'] > (time() - 300)) { echo 'color:#f60;'; } ?>"><?php if ($row['user_name']) { echo $row['user_name']; } else { echo $row['mobile']; } ?></a></td>
+<td><?php echo $row['sex_text']; ?></td>
+<td><?php echo $row['money']; ?></td>
+<td><?php echo $row['point']; ?></td>
+<td><font color="red"><?php echo $row['commission']; ?></font></td>
+<td><?php echo date('Y-m-d H:i:s',$row['add_time']); ?></td>
+<td><a href="{:url('index')}?status=<?php echo $row['status']; ?>"><?php echo $row['status_text']; ?></a></td>
+<td><a href="<?php echo url('user_money/add').'?user_id='.$row['id']; ?>">人工充值</a> | <a href="<?php echo url('user_money/index').'?user_id='.$row['id']; ?>">余额记录</a> | <a href="<?php echo url('user/edit'); ?>?id=<?php echo $row['id']; ?>">修改</a></td>
+</tr><?php }} ?>
+</tbody></table></div><!-- 表格结束 --></form><!-- 表单结束 -->
+<div class="backpages">{$page}</div>
+</div>
+{/block}

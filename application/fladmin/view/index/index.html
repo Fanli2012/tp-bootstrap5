@@ -1,0 +1,127 @@
+<!DOCTYPE html><html><head><title><?php echo sysconfig('CMS_WEBNAME'); ?>后台管理</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/bootstrap-icons.css">
+<link rel="stylesheet" href="/css/admin.css">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/respond.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/ad.js"></script></head><body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{:url('index/index')}"><i class="bi bi-ui-checks-grid"></i> 后台管理中心</a>
+      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button> -->
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo http_host(); ?>/" target="_blank"><i class="bi bi-house-fill"></i> 网站主页</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{:url('index/upcache')}"><i class="bi bi-arrow-clockwise"></i> 更新缓存</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{:url('login/loginout')}"><i class="bi bi-box-arrow-right"></i> 注销</a>
+          </li>
+        </ul>
+        <a class="d-flex text-white text-decoration-none" href="javascript:;"><small>您好：<i class="bi bi-person-fill"></i> <?php if(isset($admin_info)){echo $admin_info['name'].' ['.$admin_info['role_name'].']';} ?></small></a>
+      </div>
+    </div>
+</nav>
+<div class="collapse" id="navbarToggleExternalContent">
+  <div class="p-4">
+    <h2 class="h4">HTML教程</h2>
+	<ul>
+	  <li><a href="/docs/getting-started/introduction/">简介</a></li>
+	  <li><a href="/docs/getting-started/download/">下载</a></li>
+	  <li><a href="/docs/getting-started/contents/">内容</a></li>
+	  <li><a href="/docs/getting-started/browsers-devices/">浏览器 &amp; 设备</a></li>
+	  <li><a href="/docs/getting-started/javascript/">JavaScript</a></li>
+	  <li><a href="/docs/getting-started/build-tools/">构建工具</a></li>
+	  <li><a href="/docs/getting-started/webpack/">Webpack</a></li>
+	  <li><a href="/docs/getting-started/parcel/">Parcel</a></li>
+	  <li><a href="/docs/getting-started/accessibility/">可访问性</a></li>
+	  <li><a href="/docs/getting-started/rfs/">RFS</a></li>
+	  <li><a href="/docs/getting-started/rtl/">RTL</a></li>
+    </ul>
+    <h2 class="h4">HTML5教程</h2>
+    <p class="text-muted">Toggleable via the navbar brand.</p>
+    <ul>
+	  <li><a href="/docs/customize/overview/">概览</a></li>
+	  <li><a href="/docs/customize/sass/">Sass</a></li>
+	  <li><a href="/docs/customize/options/">参数</a></li>
+	  <li><a href="/docs/customize/color/">颜色</a></li>
+	  <li><a href="/docs/customize/components/">组件</a></li>
+	  <ul>
+		<li><a href="/docs/customize/css-variables/">CSS 变量</a></li>
+		<li><a href="/docs/customize/optimize/">优化</a></li>
+	  </ul>
+    </ul>
+  </div>
+</div>
+
+<div class="overflow-hidden">
+<div class="row">
+<!-- 左边开始 --><div class="col-sm-12 col-md-3 col-lg-2" style="padding:0;">
+<div class="menu">
+<ul class="leftmenu">
+<?php if ($menus) { foreach($menus as $k=>$first) { if (!isset($first['child']) && $first['deep']==0) { } else { ?>
+<!-- 一级菜单 -->
+<li><a href="<?php if (isset($first['child'])) { echo 'javascript:;'; } else { echo url($first['module'] . '/'. $first['controller'] . '/' . $first['action']); } ?>" class="<?php if (isset($first['child'])) { echo 'inactive '; } if ($k==0) { echo 'active '; } ?>"><?php if ($first['icon']) { echo '<small class="'.$first['icon'].'"></small>'; } ?> <?php echo $first['name']; ?></a>
+	<!-- 二级菜单 -->
+	<?php if (isset($first['child'])) { ?>
+	<ul style="display: none">
+	<?php foreach ($first['child'] as $second) { ?>
+		<li><a target="appiframe" href="<?php if (isset($second['child'])) { echo 'javascript:;'; } else { echo url($second['module'] . '/' . $second['controller'] . '/' . $second['action']); } ?>" class="<?php if (isset($second['child'])) { echo 'inactive '; } ?>"><small class="bi bi-chevron-right"></small> <?php echo $second['name']; ?></a>
+			<!-- 三级菜单 -->
+			<?php if (isset($second['child'])) { ?>
+			<ul><?php foreach ($second['child'] as $third) { ?>
+				<li><a target="appiframe" href="<?php echo url($third['module'] . '/' . $third['controller'] . '/' . $third['action']); ?>"><small class="bi bi-chevron-double-right"></small> <?php echo $third['name']; ?></a></li><?php } ?>
+			</ul><?php } ?>
+		</li>
+	<?php } ?>
+	</ul><?php } ?>
+</li>
+<?php } } } ?>
+</ul>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.inactive').click(function(){
+		var className=$(this).parents('li').parents().attr('class');
+		
+		if($(this).siblings('ul').css('display')=='none')
+		{
+			if(className=="leftmenu")
+			{
+				$(this).parents('li').siblings('li').children('ul').parent('li').children('a').removeClass('active');
+				$(this).parents('li').siblings('li').children('ul').slideUp(100);
+				$(this).parents('li').children('ul').children('li').children('ul').parent('li').children('a').removeClass('active');
+				$(this).parents('li').children('ul').children('li').children('ul').slideUp(100);
+			}
+			
+			$(this).addClass('active');
+			$(this).siblings('ul').slideDown(100);
+		}
+		else
+		{
+			$(this).removeClass('active');
+			$(this).siblings('ul').slideUp(100);
+		}
+	});
+	
+	$('.active').trigger("click");
+});
+</script>
+</div><!-- 左边结束 -->
+
+<!-- 右边开始 --><div class="col-sm-12 col-md-9 col-lg-10" style="padding:0;"><div id="mainbox">
+<script type="text/javascript">  
+	var viewH = document.documentElement.clientHeight;
+	var mainbox = document.getElementById("mainbox");  
+	mainbox.style.height = (viewH - 75)+"px";  
+</script>
+<iframe src="<?php echo url('index/welcome'); ?>" frameborder="0" scrolling="yes" width="100%" height="100%" allowtransparency="true" id="appiframe" name="appiframe"></iframe>
+</div></div><!-- 右边结束 --></div></div>
+</body></html>
